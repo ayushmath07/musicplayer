@@ -39,3 +39,12 @@ CREATE TABLE Playlist_Songs (
     FOREIGN KEY (playlist_id) REFERENCES Playlists(playlist_id),
     FOREIGN KEY (song_id) REFERENCES Songs(song_id)
 );
+CREATE TABLE RecentlyPlayed (
+    user_id INT,
+    song_id INT,
+    played_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, song_id, played_at),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (song_id) REFERENCES Songs(song_id)
+);
+
