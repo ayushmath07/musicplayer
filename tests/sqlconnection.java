@@ -1,68 +1,63 @@
 import java.sql.*;
 import java.nio.file.*;
-import java.util.*;
+
 public class sqlconnection {
+    private static final String BASE_URL = "jdbc:mysql://localhost:3306/";
+    private static final String USER = "root";
+    private static final String PASSWORD = "1234";
+    //storing db name seperaterly
+    private static final String DB_NAME = "MusicPlayer";
+
     public static void main(String[] args) {
         try {
-            String URL = "jdbc:mysql://localhost:3306/MusicPlayer";
-            String USER = "root";
-            String PASSWORD = "1234";
-            String sql = new String(Files.readAllBytes(Paths.get("C:\\Users\\AYUSHMAN MATH\\Desktop\\musicplayer\\sql\\musicplayer.sql")));
+            try (Connection con = DriverManager.getConnection(BASE_URL, USER, PASSWORD);
+                 Statement stmt = con.createStatement()) {
 
-            Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
-            Statement stmt = con.createStatement();
-stmt.execute("create database MusicPlayer;");
-            //if database exists it wont give an error :/
-            
-                
-            
+                // Create the database if it doesn't exist
+                stmt.executeUpdate("CREATE DATABASE IF NOT EXISTS " + DB_NAME);
+                System.out.println("Database created or already exists.");
+            }
 
+            // Now, connect to the specific database
+            String dbUrl = BASE_URL + DB_NAME;
+            try (Connection con = DriverManager.getConnection(dbUrl, USER, PASSWORD);
+                 Statement stmt = con.createStatement()) {
 
-            //Running code line by line to create the database
-            String[] statements = sql.split(";");
+                // Execute the sql to create tables
+                executeSqlFile(con);
 
-            for (String statement : statements) {
-                statement = statement.trim();
-                if (!statement.isEmpty()) {
+                // display all songs
+                displaySongs(con);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Failed to initialize the database.");
+        }
+    }
+
+    private static void executeSqlFile(Connection con) throws Exception {
+        String sql = new String(Files.readAllBytes(Paths.get("C:\\Users\\AYUSHMAN MATH\\Desktop\\musicplayer\\sql\\musicplayer.sql")));
+        try (Statement stmt = con.createStatement()) {
+            for (String statement : sql.split(";")) {
+                if (!statement.trim().isEmpty()) {
                     try{
-                    stmt.execute(statement);}
+                    stmt.execute(statement.trim());}
                     catch(Exception e){}
                 }
             }
-            System.out.println("Database initialized successfully.");
+        }
+        System.out.println("SQL file executed successfully.");
+    }
 
-            {// printing all songs
-            List<String> songs = getallsongs(con);
-            System.out.println("Songs are:");
-            for(String song:songs){
-                System.out.println(song);}
+    private static void displaySongs(Connection con) throws SQLException {
+        String query = "SELECT title FROM Songs";
+        try (Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            System.out.println("Songs in the database:");
+            while (rs.next()) {
+                System.out.println(rs.getString("title"));
             }
-            //TO DELETE DATABASE "FOR TESTING"
-            // stmt.execute("drop database Musicplayer;");
-            // System.out.println("Deleted database");
-
-            con.close();
-
-        } catch (Exception e) {
-            e.printStackTrace(); 
-            System.out.println("Failed to initialize the database.");
         }
-        
     }
-public static List<String> getallsongs(Connection con){
-    List<String> songs= new ArrayList<>();
-    try{
-        String query = "Select title from Songs";
-        Statement stmt = con.createStatement();
-        //executing and storing the result in a result set
-        ResultSet r = stmt.executeQuery(query);
-        while(r.next()){
-            songs.add(r.getString("title"));
-        }
-        
-    }catch(Exception e){
-        System.out.println("Not able to display all songs due to some error :<");
-    }
-    return songs;
-}}
-
+}

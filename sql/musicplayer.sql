@@ -6,8 +6,7 @@ CREATE TABLE Users (
     username VARCHAR(50),
     email VARCHAR(50),
     password_hash VARCHAR(255),
-    profile_picture VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    profile_picture VARCHAR(255)
 );
 
 -- Songs table
@@ -19,8 +18,7 @@ CREATE TABLE Songs (
     release_date DATE,
     duration TIME,
     play_count INT DEFAULT 0,
-    song_file_path VARCHAR(255),
-    upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    song_file_path VARCHAR(255)
 );
 
 -- Playlists table
