@@ -1,5 +1,5 @@
 -- Users table
-create database MusicPlayer;
+
 use MusicPlayer;
 CREATE TABLE Users (
     user_id INT PRIMARY KEY AUTO_INCREMENT,

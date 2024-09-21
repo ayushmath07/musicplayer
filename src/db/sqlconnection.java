@@ -10,7 +10,23 @@ public class sqlconnection {
 
             Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
             Statement stmt = con.createStatement();
-            stmt.execute(sql.toString());
+
+            //if database exists it wont give an error :/
+            try{
+                stmt.execute("create database MusicPlayer;");
+            }
+            catch(Exception e){}
+
+
+            //Running code line by line
+            String[] statements = sql.split(";");
+
+            for (String statement : statements) {
+                statement = statement.trim();
+                if (!statement.isEmpty()) {
+                    stmt.execute(statement);
+                }
+            }
             System.out.println("Database initialized successfully.");
         } catch (Exception e) {
             e.printStackTrace(); 
