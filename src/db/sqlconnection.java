@@ -24,7 +24,9 @@ public class sqlconnection {
             for (String statement : statements) {
                 statement = statement.trim();
                 if (!statement.isEmpty()) {
-                    stmt.execute(statement);
+                    try{
+                    stmt.execute(statement);}
+                    catch(Exception e){}
                 }
             }
             System.out.println("Database initialized successfully.");

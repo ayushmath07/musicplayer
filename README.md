@@ -1,5 +1,8 @@
 Project Title: Smart Music Player with Autocomplete and Personalized Recommendations
 
+Prerequisites:
+JDBC (Java Database Connectivity) JAR file for MySQL connectivity.
+
 Overview: This project focuses on building a fully functional music player application using Java, JavaFX, and MySQL. The application will feature a powerful search engine with autocomplete functionality, efficient song management using non-linear data structures (NLDS), and a personalized recommendation system. It merges three key concepts: Object-Oriented Programming (OOP), Non-Linear Data Structures (NLDS), and Database Systems (DBS), making it a comprehensive software project that demonstrates both technical skill and practical application.
 
 Project Features:
