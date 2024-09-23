@@ -5,7 +5,7 @@ import org.jaudiotagger.audio.*;
 import org.jaudiotagger.tag.*;
 
 
-public class  MusicPlayer {
+public class  MusicPlayercopy {
     private static final String BASE_URL = "jdbc:mysql://localhost:3306/";
     private static final String USER = "root";
     private static final String PASSWORD = "1234";
@@ -110,9 +110,11 @@ public class  MusicPlayer {
         String query = "SELECT title FROM Songs";
         try (Statement stmt = con.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
+                
             System.out.println("Songs in the database:");
             while (rs.next()) {
                 System.out.println(rs.getString("title"));
+                
             }
         }
     }

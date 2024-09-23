@@ -15,7 +15,7 @@ CREATE TABLE Songs (
     title VARCHAR(100),
     artist VARCHAR(100),
     genre VARCHAR(50),
-    release_date DATE,
+    release_year YEAR,
     duration TIME,
     play_count INT DEFAULT 0,
     song_file_path VARCHAR(255)
