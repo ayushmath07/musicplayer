@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        #song-list {
+            list-style: none;
+            padding: 0;
+        }
+        .song-item {
+            background-color: #fff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            padding: 10px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        audio {
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Music Player</h1>
+    <ul id="song-list"></ul>
+    <audio id="audio-player" controls></audio>
+
+    <script>
+        // Fetch the songs from the backend
+        async function fetchSongs() {
+            const response = await fetch('/api/songs');
+            const songs = await response.json();
+            displaySongs(songs);
+        }
+
+        // Display the songs in the list
+        function displaySongs(songs) {
+            const songList = document.getElementById('song-list');
+            songList.innerHTML = ''; // Clear the list
+
+            songs.forEach(song => {
+                const li = document.createElement('li');
+                li.classList.add('song-item');
+
+                li.innerHTML = `
+                    <span>${song.title} - ${song.artist}</span>
+                    <button onclick="playSong('${song.file}')">Play</button>
+                `;
+
+                songList.appendChild(li);
+            });
+        }
+
+        // Play the selected song
+        function playSong(songFile) {
+            const audioPlayer = document.getElementById('audio-player');
+            audioPlayer.src = `/play?songFile=${encodeURIComponent(songFile)}`;
+            audioPlayer.play();
+        }
+
+        // Fetch and display songs on page load
+        fetchSongs();
+    </script>
+</body>
+</html>

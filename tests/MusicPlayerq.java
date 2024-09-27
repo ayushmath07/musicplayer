@@ -5,7 +5,7 @@ import org.jaudiotagger.audio.*;
 import org.jaudiotagger.tag.*;
 
 
-public class  MusicPlayercopy {
+public class  MusicPlayerq {
     private static final String BASE_URL = "jdbc:mysql://localhost:3306/";
     private static final String USER = "root";
     private static final String PASSWORD = "1234";
@@ -36,9 +36,9 @@ public class  MusicPlayercopy {
                 // Display all songs from the database
                 displaySongs(con);
                 
-                //TO DELETE DATABASE "FOR TESTING"
-            stmt.execute("drop database Musicplayer;");
-            System.out.println("Deleted database");
+            //     //TO DELETE DATABASE "FOR TESTING"
+            // stmt.execute("drop database Musicplayer;");
+            // System.out.println("Deleted database");
             }
 
         } catch (Exception e) {
@@ -110,11 +110,9 @@ public class  MusicPlayercopy {
         String query = "SELECT title FROM Songs";
         try (Statement stmt = con.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
-                
             System.out.println("Songs in the database:");
             while (rs.next()) {
                 System.out.println(rs.getString("title"));
-                
             }
         }
     }

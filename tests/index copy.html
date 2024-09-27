@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Immersive Music Player</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+
+        :root {
+            --primary-bg: #121212;
+            --secondary-bg: #1e1e1e;
+            --accent-color: #1DB954;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 1200px;
+            height: 80vh;
+            background-color: var(--secondary-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+            background: linear-gradient(to bottom, #2a2a2a, var(--primary-bg));
+        }
+
+        .album-art {
+            width: 100%;
+            padding-top: 100%; /* 1:1 Aspect Ratio */
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .album-art img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .song-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .song-title {
+            font-size: 1.8em;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .artist-name {
+            font-size: 1.2em;
+            color: var(--text-secondary);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            margin: 0 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            color: var(--accent-color);
+            transform: scale(1.1);
+        }
+
+        .play-pause {
+            width: 60px;
+            height: 60px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(29, 185, 84, 0.3);
+        }
+
+        .play-pause:hover {
+            background-color: #1ed760;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: #4d4d4d;
+            border-radius: 2px;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .progress {
+            width: 30%;
+            height: 100%;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .playlist {
+            flex: 1;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .playlist-item {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .playlist-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .playlist-item.active {
+            background-color: rgba(29, 185, 84, 0.2);
+        }
+
+        .playlist-item-title {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .playlist-item-artist {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+                height: 100vh;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: 60vh;
+            }
+
+            .main-content {
+                height: 40vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="album-art">
+                <img src="/api/placeholder/300/300" alt="Album Art">
+            </div>
+            <div class="song-info">
+                <div class="song-title">Love 2K20</div>
+                <div class="artist-name">Adele</div>
+            </div>
+            <div class="controls">
+                <button class="control-btn">⏮</button>
+                <button class="control-btn play-pause">▶</button>
+                <button class="control-btn">⏭</button>
+            </div>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+        </aside>
+        <main class="main-content">
+            <h2>Playlist</h2>
+            <div class="playlist">
+                <div class="playlist-item active">
+                    <div class="playlist-item-title">Love 2K20</div>
+                    <div class="playlist-item-artist">Adele</div>
+                </div>
+                <div class="playlist-item">
+                    <div class="playlist-item-title">Someone Like You</div>
+                    <div class="playlist-item-artist">Adele</div>
+                </div>
+                <div class="playlist-item">
+                    <div class="playlist-item-title">If I Could Change You</div>
+                    <div class="playlist-item-artist">Adele</div>
+                </div>
+                <div class="playlist-item">
+                    <div class="playlist-item-title">Chasing Pavements</div>
+                    <div class="playlist-item-artist">Adele</div>
+                </div>
+                <div class="playlist-item">
+                    <div class="playlist-item-title">Rolling in the Deep</div>
+                    <div class="playlist-item-artist">Adele</div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
