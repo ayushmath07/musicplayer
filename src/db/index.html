@@ -1,8 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Music Player</title>
     <style>
         body {
@@ -51,17 +48,16 @@
     <audio id="audio-player" controls></audio>
 
     <script>
-        // Fetch the songs from the backend
         async function fetchSongs() {
             const response = await fetch('/api/songs');
             const songs = await response.json();
             displaySongs(songs);
         }
 
-        // Display the songs in the list
+
         function displaySongs(songs) {
             const songList = document.getElementById('song-list');
-            songList.innerHTML = ''; // Clear the list
+            songList.innerHTML = ''; 
 
             songs.forEach(song => {
                 const li = document.createElement('li');
@@ -76,14 +72,14 @@
             });
         }
 
-        // Play the selected song
+
         function playSong(songFile) {
             const audioPlayer = document.getElementById('audio-player');
             audioPlayer.src = `/play?songFile=${encodeURIComponent(songFile)}`;
             audioPlayer.play();
         }
 
-        // Fetch and display songs on page load
+        //run
         fetchSongs();
     </script>
 </body>

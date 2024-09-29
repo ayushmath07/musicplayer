@@ -16,42 +16,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MusicPlayer1 {
-    // Database connection details
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/MusicPlayer";
-    private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "1234";
-
-    // Song directory (location of mp3 files)
-    private static final String SONGS_DIRECTORY = "C:\\Users\\AYUSHMAN MATH\\Desktop\\songs";
-    private static final String STATIC_DIRECTORY = "C:\\Users\\AYUSHMAN MATH\\Desktop\\musicplayer\\src\\db\\";  // Location of HTML, CSS, JS files
-
-    public static void main(String[] args) throws Exception {
-        // Automatically insert songs from the directory into the database
+    static String DB_URL = "jdbc:mysql://localhost:3306/MusicPlayer";
+    static String DB_USER = "root";
+    static String DB_PASSWORD = "1234";
+    static String SONGS_DIRECTORY = "C:\\Users\\AYUSHMAN MATH\\Desktop\\songs";
+    static String STATIC_DIRECTORY = "C:\\Users\\AYUSHMAN MATH\\Desktop\\musicplayer\\src\\db\\";
+    public static void main(String[] args) throws Exception{
         insertSongsIntoDB();
 
         HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
-        server.createContext("/", new StaticFileHandler());  // Root context to serve static files
+        server.createContext("/", new StaticFileHandler()); 
         server.createContext("/api/songs", new SongsHandler());
         server.createContext("/play", new SongStreamHandler());
-        server.setExecutor(null);  // Default executor
+        server.setExecutor(null);  
         server.start();
-        System.out.println("Server started on port 8000");
+        System.out.println("Server started at the port 8000");
     }
 
-    // Database connection method
     public static Connection getDBConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
     }
 
-    // Automatically scan songs directory and insert them into the database
+
 public static void insertSongsIntoDB() {
     File folder = new File(SONGS_DIRECTORY);
-    File[] files = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".mp3"));
+    File[] files = folder.listFiles(File::isFile);
 
     if (files != null) {
         for (File file : files) {
             try {
-                // Extract metadata using Jaudiotagger
+
                 AudioFile audioFile = AudioFileIO.read(file);
                 Tag tag = audioFile.getTag();
                 String title = tag.getFirst(FieldKey.TITLE);
@@ -59,16 +53,15 @@ public static void insertSongsIntoDB() {
                 String filePath = file.getName();
 
                 if (title.isEmpty()) {
-                    title = file.getName();  // Use the filename as the title if no metadata is found
+                    title = file.getName(); 
                 }
                 if (artist.isEmpty()) {
-                    artist = "Unknown Artist";
+                    artist = "unknown artist";
                 }
 
-                // Check if the song already exists in the database
+                
                 if (!songExistsInDB(title, artist, filePath)) {
-                    // Insert the song data into the database
-                    String query = "INSERT INTO Songs (title, artist, song_file_path) VALUES (?, ?, ?)";
+                    String query = "insert into Songs (title, artist, song_file_path) values (?, ?, ?)";
                     try (Connection conn = getDBConnection();
                          PreparedStatement pstmt = conn.prepareStatement(query)) {
                         pstmt.setString(1, title);
@@ -84,7 +77,7 @@ public static void insertSongsIntoDB() {
     }
 }
 
-// Method to check if a song already exists in the database
+
 public static boolean songExistsInDB(String title, String artist, String filePath) {
     String query = "SELECT * FROM Songs WHERE title = ? AND artist = ? AND song_file_path = ?";
     try (Connection conn = getDBConnection();
@@ -93,7 +86,7 @@ public static boolean songExistsInDB(String title, String artist, String filePat
         pstmt.setString(2, artist);
         pstmt.setString(3, filePath);
         try (ResultSet rs = pstmt.executeQuery()) {
-            return rs.next();  // Return true if the song exists, false otherwise
+            return rs.next();  
         }
     } catch (SQLException e) {
         e.printStackTrace();
@@ -101,13 +94,12 @@ public static boolean songExistsInDB(String title, String artist, String filePat
     }
 }
 
-    // Static file handler to serve HTML, CSS, JS
     static class StaticFileHandler implements HttpHandler {
         @Override
-        public void handle(HttpExchange exchange) throws IOException {
+        public void handle(HttpExchange exchange) throws IOException{
             String path = exchange.getRequestURI().getPath();
             if (path.equals("/")) {
-                path = "/index.html";  // Serve index.html by default
+                path = "/index.html";
             }
 
             File file = new File(STATIC_DIRECTORY + path);
@@ -120,12 +112,10 @@ public static boolean songExistsInDB(String title, String artist, String filePat
             } else {
                 String response = "404 Not Found";
                 exchange.sendResponseHeaders(404, response.length());
-                exchange.getResponseBody().write(response.getBytes());
             }
         }
     }
 
-    // Handler to fetch songs from the database
     static class SongsHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -138,11 +128,10 @@ public static boolean songExistsInDB(String title, String artist, String filePat
                     os.write(response.getBytes());
                 }
             } else {
-                exchange.sendResponseHeaders(405, -1); // Method Not Allowed
+                exchange.sendResponseHeaders(405, -1); 
             }
         }
 
-        // Fetch songs from the database
         public static List<JSONObject> fetchSongsFromDB() {
             List<JSONObject> songs = new ArrayList<>();
             String query = "SELECT * FROM Songs";
@@ -164,16 +153,13 @@ public static boolean songExistsInDB(String title, String artist, String filePat
         }
     }
 
-    // Handler to stream the selected song file
     static class SongStreamHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             String query = exchange.getRequestURI().getQuery();
+            // testing =System.out.println(query+ "THIS IS QUESRY");
             String[] params = query.split("=");
-            if (params.length != 2 || !params[0].equals("songFile")) {
-                exchange.sendResponseHeaders(400, -1);  // Bad request if parameter is incorrect
-                return;
-            }
+            
 
             String songFile = params[1];
             Path filePath = Paths.get(SONGS_DIRECTORY, songFile);
@@ -193,7 +179,6 @@ public static boolean songExistsInDB(String title, String artist, String filePat
             } else {
                 String response = "Song not found";
                 exchange.sendResponseHeaders(404, response.length());
-                exchange.getResponseBody().write(response.getBytes());
             }
         }
     }
