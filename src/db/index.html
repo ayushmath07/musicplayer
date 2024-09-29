@@ -49,38 +49,20 @@
 
     <script>
         async function fetchSongs() {
-            const response = await fetch('/api/songs');
-            const songs = await response.json();
-            displaySongs(songs);
+            const response = await fetch('/songs');
+            const songList = await response.text();
+            document.getElementById('song-list').innerHTML = songList;
         }
-
-
-        function displaySongs(songs) {
-            const songList = document.getElementById('song-list');
-            songList.innerHTML = ''; 
-
-            songs.forEach(song => {
-                const li = document.createElement('li');
-                li.classList.add('song-item');
-
-                li.innerHTML = `
-                    <span>${song.title} - ${song.artist}</span>
-                    <button onclick="playSong('${song.file}')">Play</button>
-                `;
-
-                songList.appendChild(li);
-            });
-        }
-
-
+    
         function playSong(songFile) {
             const audioPlayer = document.getElementById('audio-player');
             audioPlayer.src = `/play?songFile=${encodeURIComponent(songFile)}`;
             audioPlayer.play();
         }
-
-        //run
+    
+        // run
         fetchSongs();
     </script>
+    
 </body>
 </html>
