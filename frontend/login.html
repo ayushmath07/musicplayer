@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: url(headphone.jpg) no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            height: 100vh;
+            animation: fadeIn 2s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .login-container {
+           
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-left: 20%;
+            animation: slideIn 1s ease-in-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .login-container h1 {
+            font-family: dancing script;
+            font-size: 500%;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            color: #c01ac0;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        .login-container input {
+            width: 100%;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            animation: fadeIn 2s ease-in-out;
+        }
+        .login-container button {
+            width: 100%;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            border: none;
+            border-radius: 5px;
+            background: #e675ff8c;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            animation: fadeIn 2.5s ease-in-out;
+        }
+        .login-container button:hover {
+            background: #ff7eb3;
+        }
+        .register-link {
+            margin-top: 1rem;
+            display: block;
+            color: #75b0ffc2;
+            text-decoration: none;
+            font-weight: 600;
+            animation: fadeIn 3s ease-in-out;
+        }
+        .register-link:hover {
+            text-decoration: underline;
+        }
+       
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        
+        <h1>#Login#</h1>
+        <form>
+            <input type="text" placeholder="Username" required>
+            <input type="password" placeholder="Password" required>
+            <br><br>
+            <button type="submit">Log in</button>
+            <a href="register.html" class="register-link">Not registered? Sign up here</a>
+        </form>
+    </div>
+</body>
+</html>
