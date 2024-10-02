@@ -1,14 +1,28 @@
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Music Player</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: black;
             margin: 0;
             padding: 20px;
         }
         h1 {
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.7);
+            margin-top: 35px;
+            margin-bottom: 55px;
+            font-size: 45px;
+            font-family: Dancing Script,sans-serif;
+            color :lavender;
             text-align: center;
         }
         #song-list {
@@ -16,53 +30,178 @@
             padding: 0;
         }
         .song-item {
-            background-color: #fff;
-            padding: 15px;
+            font-size: 18px;
+            font-family: Courgette,sans-serif;
+            color: lavender;
+            padding: 20px;
             margin: 10px 0;
             border-radius: 5px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 -4px 15px rgba(225, 0, 255, 0.7);
+            transition: all 0.5s ease;
+            animation: fadeIn 1s forwards;
         }
-        button {
+        .new-song-item {
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+        .song-item:hover{
+            color: #f767f7;
+            transform: scale(1.03);
+        }
+        #search-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        #searchInput {
+            font-size: 17px;
             padding: 10px;
             border: none;
-            background-color: #4CAF50;
-            color: white;
+            background-color: black;
+            color: lavender;
+            border-radius: 5px;
+            width: 300px;
+        }
+        #searchInput:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #1DB954;
+        }
+        #search-button {
+            font-size: 17px;
+            padding: 10px;
+            border: none;
+            background-color: black;
+            color: lavender;
             cursor: pointer;
             border-radius: 5px;
+            margin-left: 10px;
         }
-        button:hover {
-            background-color: #45a049;
+        #search-button:hover {
+            color: white;
+        }
+        #searchResults {
+            position: absolute;
+            background-color: black;
+            border: 1px solid #ddd;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 0 2px #1DB954;
+        }
+        #searchResults div {
+            padding: 10px;
+            cursor: pointer;
+            color: lavender;
+        }
+        #searchResults div:hover {
+            background-color: #333;
         }
         audio {
             width: 100%;
             margin-top: 20px;
+            filter: invert(100%);
+        }
+        footer{
+            position:fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: black;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Music Player</h1>
+    <h1>#Music Player#</h1>
+    <div id="search-container">
+        <input type="text" id="searchInput" placeholder="Search for songs...">
+        <button id="search-button" onclick="search()">Search</button>
+        <div id="searchResults"></div>
+    </div>
     <ul id="song-list"></ul>
-    <audio id="audio-player" controls></audio>
-
+    <footer>
+        <audio id="audio-player" controls></audio>
+    </footer>
     <script>
+        let songs = [];
+
         async function fetchSongs() {
             const response = await fetch('/songs');
             const songList = await response.text();
             document.getElementById('song-list').innerHTML = songList;
+            songs = Array.from(document.querySelectorAll('.song-item')).map(item => ({
+                title: item.querySelector('span').textContent.split(' - ')[0],
+                artist: item.querySelector('span').textContent.split(' - ')[1],
+                filePath: item.querySelector('button').getAttribute('onclick').match(/'([^']+)'/)[1]
+            }));
+            applyAnimationDelay();
         }
-    
+
         function playSong(songFile) {
             const audioPlayer = document.getElementById('audio-player');
-            audioPlayer.src = `/play?songFile=${encodeURIComponent(songFile)}`;
+            audioPlayer.src = `/play?song=${songFile}`;
             audioPlayer.play();
         }
-    
+
+        function search() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filteredSongs = songs.filter(song => 
+                song.title.toLowerCase().includes(searchTerm) || 
+                song.artist.toLowerCase().includes(searchTerm)
+            );
+            displaySearchResults(filteredSongs);
+        }
+
+        function displaySearchResults(results) {
+            const searchResults = document.getElementById('searchResults');
+            searchResults.innerHTML = '';
+            results.forEach(song => {
+                const div = document.createElement('div');
+                div.textContent = `${song.title} - ${song.artist}`;
+                div.onclick = () => playSong(song.filePath);
+                searchResults.appendChild(div);
+            });
+            searchResults.style.display = results.length > 0 ? 'block' : 'none';
+        }
+
+        document.getElementById('searchInput').addEventListener('input', () => {
+            if (document.getElementById('searchInput').value.length > 0) {
+                search();
+            } else {
+                document.getElementById('searchResults').style.display = 'none';
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!document.getElementById('search-container').contains(e.target)) {
+                document.getElementById('searchResults').style.display = 'none';
+            }
+        });
+
+        function applyAnimationDelay() {
+            const songItems = document.querySelectorAll('.song-item');
+            songItems.forEach((item, index) => {
+                item.classList.add('new-song-item');
+                item.style.animationDelay = `${index * 0.2}s`;
+            });
+        }
+
         // run
         fetchSongs();
     </script>
-    
 </body>
 </html>

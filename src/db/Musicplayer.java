@@ -5,13 +5,14 @@ import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.FieldKey;
-
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.nio.file.*;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Musicplayer {
 
@@ -20,14 +21,17 @@ public class Musicplayer {
     static String DB_PASSWORD = "1234";
     static String SONGS_DIRECTORY = "C:\\Users\\AYUSHMAN MATH\\Desktop\\songs";
     static String STATIC_DIRECTORY = "C:\\Users\\AYUSHMAN MATH\\Desktop\\musicplayer\\src\\db\\";
+    static TrieNode root = new TrieNode(); 
 
     public static void main(String[] args) throws Exception {
         insertSongsIntoDB();
+        buildTrie();
 
         HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
         server.createContext("/", new StaticFileHandler());
         server.createContext("/songs", new SongsHandler());
         server.createContext("/play", new SongStreamHandler());
+        server.createContext("/autocomplete", new AutocompleteHandler());
         server.setExecutor(null);
         server.start();
         System.out.println("Server started on port 8000");
@@ -184,4 +188,69 @@ public class Musicplayer {
             }
         }
     }
+    static class AutocompleteHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            if ("GET".equals(exchange.getRequestMethod())) {
+                String query = exchange.getRequestURI().getQuery();
+                String prefix = query.split("=")[1].toLowerCase();
+                List<String> suggestions = autocomplete(prefix);
+
+                String response = String.join("\n", suggestions);
+                exchange.sendResponseHeaders(200, response.length());
+                try (OutputStream os = exchange.getResponseBody()) {
+                    os.write(response.getBytes());
+                }
+            } else {
+                exchange.sendResponseHeaders(405, -1);
+            }
+        }
+    }
+
+    static class TrieNode {
+        Map<Character, TrieNode> children = new HashMap<>();
+        boolean isEndOfWord;
+        String fullWord;
+    }
+
+    static void insertIntoTrie(String word) {
+        TrieNode current = root;
+        for (char c : word.toLowerCase().toCharArray()) {
+            current.children.putIfAbsent(c, new TrieNode());
+            current = current.children.get(c);
+        }
+        current.isEndOfWord = true;
+        current.fullWord = word;
+    }
+
+    static void buildTrie() {
+        List<String[]> songs = SongsHandler.fetchSongsFromDB();
+        for (String[] song : songs) {
+            insertIntoTrie(song[0]); 
+            insertIntoTrie(song[1]); 
+        }
+    }
+
+    static List<String> autocomplete(String prefix) {
+        List<String> result = new ArrayList<>();
+        TrieNode current = root;
+        for (char c : prefix.toCharArray()) {
+            if (!current.children.containsKey(c)) {
+                return result;
+            }
+            current = current.children.get(c);
+        }
+        collectWords(current, result);
+        return result;
+    }
+
+    static void collectWords(TrieNode node, List<String> result) {
+        if (node.isEndOfWord) {
+            result.add(node.fullWord);
+        }
+        for (TrieNode child : node.children.values()) {
+            collectWords(child, result);
+        }
+    }
+
 }
