@@ -1,7 +1,45 @@
 Project Title: Smart Music Player with Autocomplete and Personalized Recommendations
 
-Prerequisites:
-JDBC (Java Database Connectivity) JAR file for MySQL connectivity.
+*Installation Steps for Smart Music Player*
+1. Clone/Download the Project:
+Clone the repository or download the source code to your local machine.
+2. Setup MySQL Database:
+Open MySQL Workbench or any MySQL client.
+Navigate to the SQL folder in the project directory and find the SQL file that contains the schema for your music player.
+Run the SQL file to create the necessary tables in your database. This includes tables such as Songs, Users, and Playlists.
+3. Configure Database Connection:
+In the Musicplayer.java file, you need to update the following variables:
+
+static String DB_URL = "jdbc:mysql://localhost:3306/MusicPlayer";  // Database URL
+static String DB_USER = "root";  // Replace with your MySQL username
+static String DB_PASSWORD = "1234";  // Replace with your MySQL password
+
+4. Configure File Paths:
+You’ll also need to update the file paths for your songs and static files:
+
+static String SONGS_DIRECTORY = "C:\\Users\\AYUSHMAN MATH\\Desktop\\songs";  // Path where your music files are stored
+static String STATIC_DIRECTORY = "C:\\Users\\AYUSHMAN MATH\\Desktop\\musicplayer\\src\\db\\";  // Path for static files like index.html
+
+
+Make sure these directories exist on your machine, or update the paths according to where your files are located.
+
+5. Add JAR Dependencies:
+MySQL JDBC Connector: Download from here.
+Jaudiotagger: Download from here.
+Ensure both JAR files are added to your project’s classpath.
+
+6. Run the Application:
+Open the project in your IDE (IntelliJ, Eclipse, etc.).
+Make sure the MySQL service is running and the database is set up.
+Run the Musicplayer class. This will:
+Insert songs from the SONGS_DIRECTORY into the MySQL database.
+Build the Trie for autocomplete.
+Start the server on localhost:8000.
+7. Access the Application:
+Open a web browser and go to http://localhost:8000/ to interact with the music player.
+Use the autocomplete search to find songs by title or artist, and stream them directly from the server.
+8. Modify Static Files:
+If you want to customize the frontend (like index.html), you can modify the files in the STATIC_DIRECTORY. These files are served through the StaticFileHandler in your code.
 
 Overview: This project focuses on building a fully functional music player application using Java, JavaFX, and MySQL. The application will feature a powerful search engine with autocomplete functionality, efficient song management using non-linear data structures (NLDS), and a personalized recommendation system. It merges three key concepts: Object-Oriented Programming (OOP), Non-Linear Data Structures (NLDS), and Database Systems (DBS), making it a comprehensive software project that demonstrates both technical skill and practical application.
 
