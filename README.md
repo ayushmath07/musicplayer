@@ -24,9 +24,9 @@ static String STATIC_DIRECTORY = "C:\\Users\\AYUSHMAN MATH\\Desktop\\musicplayer
 Make sure these directories exist on your machine, or update the paths according to where your files are located.
 
 5. Add JAR Dependencies:
-MySQL JDBC Connector: Download from here.
-Jaudiotagger: Download from here.
-Ensure both JAR files are added to your project’s classpath.
+MySQL JDBC Connector: Download from https://dev.mysql.com/downloads/connector/j/
+Jaudiotagger: Download from https://bitbucket.org/ijabz/jaudiotagger/downloads/
+Ensure both JAR files are added to your project’s classpath. IMP
 
 6. Run the Application:
 Open the project in your IDE (IntelliJ, Eclipse, etc.).
